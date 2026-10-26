@@ -153,7 +153,7 @@ public class Main {
             System.out.println("\n  [✓] Member registered successfully! ID: " + id);
         } catch (DuplicateMemberException e) {
             System.out.println("\n  [✗] " + e);
-        } catch (InvalidClubDataException e)2 {
+        } catch (InvalidClubDataException e) {
 
             System.out.println("\n  [✗] " + e.getMessage());
         }

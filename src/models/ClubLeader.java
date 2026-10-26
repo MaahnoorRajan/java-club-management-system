@@ -30,6 +30,7 @@ public class ClubLeader extends StudentMember {
     @Override
     public String getRole() {
         return "Club Leader";
+    }
 
     @Override
     public void displayDetails() {
