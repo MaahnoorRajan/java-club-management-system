@@ -156,20 +156,32 @@ public class ClubManager {
 
     public void removeMemberFromClub(String memberId, String clubId)
             throws ClubNotFoundException, InvalidClubDataException {
-        Club club            = findClubById(clubId);
+        Club club = findClubById(clubId);
         StudentMember member = findMemberById(memberId);
-
-        if (!club.hasMember(memberId)) {
+        String storedMemberId = member.getId();
+        String storedClubId = club.getId();
+        if (!club.hasMember(storedMemberId)) {
             throw new InvalidClubDataException(
                     "Member [" + memberId + "] is NOT a member of Club [" + clubId + "].",
                     "MEMBER_NOT_IN_CLUB");
         }
-
-        club.removeMember(memberId);
-        member.removeClubId(clubId);
-
-        if (clubId.equalsIgnoreCase(club.getLeaderId())) {
+        club.removeMember(storedMemberId);
+        member.removeClubId(storedClubId);
+        if (storedMemberId.equalsIgnoreCase(club.getLeaderId())) {
             club.setLeaderId(null);
+        }
+        demoteLeaderOfClub(member, storedClubId);
+    }
+
+    private void demoteLeaderOfClub(StudentMember member, String clubId) {
+        if (member instanceof ClubLeader leader
+                && clubId.equalsIgnoreCase(leader.getLeadingClubId())) {
+            StudentMember regular = new StudentMember(
+                    member.getId(), member.getName(), member.getEmail(),
+                    member.getAge(), member.getMajor());
+            for (String otherClubId : member.getClubIds()) regular.addClubId(otherClubId);
+            members.set(members.indexOf(member), regular);
+            memberMap.put(regular.getId(), regular);
         }
     }
 
