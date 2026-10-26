@@ -86,12 +86,15 @@ public class ClubManager {
     public void deleteClub(String clubId) throws ClubNotFoundException {
         Club club = findClubById(clubId);
 
-        for (StudentMember member : members) {
-            member.removeClubId(clubId);
+        String storedClubId = club.getId();
+        for (int i = 0; i < members.size(); i++) {
+            StudentMember member = members.get(i);
+            member.removeClubId(storedClubId);
+            demoteLeaderOfClub(member, storedClubId);
         }
-
+        allActivities.removeIf(activity -> storedClubId.equalsIgnoreCase(activity.getClubId()));
         clubs.remove(club);
-        clubMap.remove(clubId.toUpperCase());
+        clubMap.remove(storedClubId);
     }
 
     public List<Club> searchClubsByName(String keyword) {
